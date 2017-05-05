@@ -18,23 +18,31 @@ public class Product {
 	
 	private Set<String> nameWordSet;
 	
-	private String manufacturer;
+	private String manufacturer = null;
 	
-	private String model;
+	private String model = null;
 	
 	private Set<String> modelWordSet;
 	
-	private String family;
+	private String family = null;
 	
 	public Product(JSONObject obj) {
 		
-		name = obj.getString(PRODUCT_NAME);
+		if (obj.has(PRODUCT_NAME)) {
+		  name = obj.getString(PRODUCT_NAME);
+		}
 		
-		manufacturer = obj.getString(MANUFACTURER);
+		if (obj.has(MANUFACTURER)) {
+		  manufacturer = obj.getString(MANUFACTURER);
+		}
 		
-		family = obj.getString(FAMILY);
+		if (obj.has(FAMILY)) {
+	    	family = obj.getString(FAMILY);
+		}
 		
-		model = obj.getString(MODEL);
+		if (obj.has(MODEL)) {
+	    	model = obj.getString(MODEL);
+		}
 	}
 	
 	public String getName() {
