@@ -65,6 +65,11 @@ public class Product {
 		return family;
 	}
 	
+	
+	public String getManufacturer() {
+		return manufacturer;
+	}
+	
 	public String toString() {
 		return "{ \"name\":\"" + getName() + "}";
 	}
