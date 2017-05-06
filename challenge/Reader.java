@@ -36,10 +36,12 @@ public class Reader {
 			
 		} catch (EOFException e) {
 
-		}catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (Product.ProductException e) {
+			System.out.println("Error in product file:" + e.getMessage());
 		}
 		
 		return collection;

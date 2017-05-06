@@ -1,14 +1,13 @@
 package challenge;
 
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.json.JSONWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProductCollection {
 	
@@ -35,6 +34,14 @@ public class ProductCollection {
 	
 	static {
 		manufacturerNoiseWords.add("Canada");
+	}
+	
+	private static final Set<Pattern> forSynonyms = new HashSet<Pattern>();
+	
+	static {
+		forSynonyms.add(Pattern.compile("\\sfor\\s"));
+		forSynonyms.add(Pattern.compile("\\sfür\\s"));
+		forSynonyms.add(Pattern.compile("\\spour\\s"));
 	}
 	
 	
@@ -87,13 +94,31 @@ public class ProductCollection {
 		return products;
 	}
 	
+	/**
+	 * Determines if the Listing is a match for the product p. It assumes that there is already a match for the manufacturer.
+	 * @param listing the listing to match
+	 * @param product the product to match
+	 * @return if there is a match
+	 */
 	private boolean matches(Listing listing, Product product) {
 		
-		if (listing.getTitle().contains(product.getModel())) {
-			return true;
-		} else {
+		String title =  withoutFor(listing.getTitle());
+		
+		Matcher modelMatcher = product.getModelPattern().matcher(title);
+		
+		if (!modelMatcher.matches()) {
 			return false;
 		}
+		
+		Pattern familyPattern = product.getFamilyPattern();
+		if (familyPattern != null) {
+			Matcher familyMatcher = familyPattern.matcher(title);
+			if (!familyMatcher.matches()) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	
@@ -115,20 +140,23 @@ public class ProductCollection {
 			}
 		}
 	}
-	
-	public static String listingOutput(Listing listing) {
-		StringWriter sw = new StringWriter();
-		
-		JSONWriter jw = new JSONWriter(sw).object();
-		
-		jw.key("title").value(listing.getTitle())
-		.key("manufacturer").value(listing.getManufacturer())
-		.key("currency").value(listing.getCurrency())
-		.key("price").value(listing.getPrice());
-		jw.endObject();
 
+	/**
+	 * Returns the part of a title that occurs before the first occurrence of the word 'for' or various synonyms
+	 * @param title the title
+	 * @return substring of the title before the word 'for'. May be 'title' if no synonyms are found.
+	 */
+	private static String withoutFor(String title) {
 		
-		return sw.toString();
+		for (Pattern p: forSynonyms) {
+			Matcher m = p.matcher(title);
+			boolean found = m.find();
+			if (found) {
+				title = title.substring(0,m.start());
+			}
+		}
+
+		return title;
 		
 	}
 
