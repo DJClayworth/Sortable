@@ -18,7 +18,9 @@ public class ListingMatcher {
 		try {
 		 products  = Reader.readProducts("products.txt");
 		
-		  BufferedReader reader = new BufferedReader(new FileReader("listings.txt"));
+		 products.createManufacturerSynonyms();
+		 
+		 BufferedReader reader = new BufferedReader(new FileReader("listings.txt"));
 		  
 		  while (true) {
 			  Listing listing = Reader.readListing(reader);
@@ -37,14 +39,6 @@ public class ListingMatcher {
 			e.printStackTrace();
 		}
 		
-//		  Set<Product> productsForThisManufacturer = products.findManufacturer(l);
-//		  
-//		  System.out.print(l.toString());
-//		  
-//		  if (productsForThisManufacturer != null) {
-//		    System.out.print(productsForThisManufacturer.iterator().next().getManufacturer());
-//		  }
-//		  
 		if (products != null) {
 		  Map<Product,List<Listing>> matchingListings = products.getMatchingListing();
 		  

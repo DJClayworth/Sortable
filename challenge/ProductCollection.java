@@ -32,10 +32,6 @@ public class ProductCollection {
 	/** These are words that will be ignored in the determination of whether there is a match of manufacturers or not */
 	private static final Set<String> manufacturerNoiseWords = new HashSet<String>();
 	
-	static {
-		manufacturerNoiseWords.add("Canada");
-	}
-	
 	private static final Set<Pattern> forSynonyms = new HashSet<Pattern>();
 	
 	static {
@@ -65,6 +61,24 @@ public class ProductCollection {
 
 	}
 	
+	/**
+	 * If a manufacturer has more than one word in, add a synonym for the two individual words
+	 */
+	public void createManufacturerSynonyms() {
+		
+		for (String m : productsByManufacturer.keySet() ) {
+			
+			String mWords[] = m.split("\\s+");
+			
+			if (mWords.length > 1) {
+				Set<Product> products = productsByManufacturer.get(m);
+				for (String mw: mWords) {
+				  manufacturerSynonyms.put(mw, products);
+				}
+			}
+		}
+	}
+	
 	private Set<Product> findManufacturer(Listing l) {
 		
 		String manufacturer = l.getManufacturer().toLowerCase();
@@ -89,7 +103,24 @@ public class ProductCollection {
 				}
 				break;
 			}
+			
+			// Still no match. Now look for the words in the synonyms
+			if (products == null) {
+				
+				for (String s : manufacturerWords) {
+					products = manufacturerSynonyms.get(s.toLowerCase());
+					if (products != null) {
+						// Note this as a synonym of the manufacturer for future use
+						manufacturerSynonyms.put(manufacturer, products);
+					}
+					break;
+				}
+			}
+
 		}
+		
+		
+
 		
 		return products;
 	}
