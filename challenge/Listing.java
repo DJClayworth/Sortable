@@ -2,7 +2,13 @@ package challenge;
 
 import org.json.JSONObject;
 
-public class Listing {
+/**
+ * Class that represents an entry in the listing file
+ * 
+ * @author David
+ *
+ */
+public class Listing implements IListing {
 	
 	private static final String TITLE = "title";
 	
@@ -42,18 +48,34 @@ public class Listing {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see challenge.IListing#getTitle()
+	 */
+	@Override
 	public String getTitle() {
 		return title;
 	}
 	
+	/* (non-Javadoc)
+	 * @see challenge.IListing#getManufacturer()
+	 */
+	@Override
 	public String getManufacturer() {
 		return manufacturer;
 	}
 	
+	/* (non-Javadoc)
+	 * @see challenge.IListing#getCurrency()
+	 */
+	@Override
 	public String getCurrency() {
 		return currency;
 	}
 	
+	/* (non-Javadoc)
+	 * @see challenge.IListing#getPrice()
+	 */
+	@Override
 	public String getPrice() {
 		return price;
 	}

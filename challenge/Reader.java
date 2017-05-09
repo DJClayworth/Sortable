@@ -8,6 +8,12 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
+/**
+ * This class provides methods for reading input files.
+ * 
+ * @author David
+ *
+ */
 public class Reader {
 	
 	public static ProductCollection readProducts(String filename) {
@@ -20,13 +26,16 @@ public class Reader {
 			while (true) {
 			
 			  String line = reader.readLine();
-			
+			  
 			  if (line != null) {
+				  int firstParens = line.indexOf('{');
+				  if (firstParens > 0) {
+					  line = line.substring(firstParens);
+				  }
+
 				  JSONObject obj = new JSONObject(line);
 
 				  Product p = new Product(obj);
-
-				  //System.out.println(p.toString());
 
 				  collection.addProduct(p);
 			  } else {
@@ -35,6 +44,7 @@ public class Reader {
 			}
 			
 		} catch (EOFException e) {
+			// EOF expected
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -48,7 +58,12 @@ public class Reader {
 
 	}
 
-	
+	/**
+	 * Read a single listing
+	 * @param reader
+	 * @return
+	 * @throws IOException
+	 */
 	public static Listing readListing(BufferedReader reader) throws IOException {
 
 			while (true) {

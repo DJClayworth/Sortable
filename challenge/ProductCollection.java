@@ -11,26 +11,24 @@ import java.util.regex.Pattern;
 
 public class ProductCollection {
 	
-	private Set<Product> productSet = new HashSet<Product>();
-	
 	/**
 	 * Products grouped by manufacturer. Key is the manufacturer name (lowercased), and the value is the set of products for that manufacturer.
 	 * 
 	 * Note that we are assuming a certain amount of control and standardisation over the manufacturer's name in the products file - i.e.
 	 * that there are no synonyms.
+	 * 
+	 * This class not only stores the lists of products, but also has the methods for doing the product matching. 
 	 */
 	private Map<String,Set<Product>> productsByManufacturer = new HashMap<String,Set<Product>>();
 	
 	/**
-	 * This map acts as a cache of synonyms for manufacturers detected in processing the listings. All Set<Product> objects in here also appear in productsByManufacturer.
+	 * This map acts as a cache of synonyms for manufacturers detected in processing the listings. 
+	 * All Set<Product> objects in here also appear in productsByManufacturer.
 	 */
 	private Map<String,Set<Product>> manufacturerSynonyms = new HashMap<String,Set<Product>>();
 	
 	/** Stores the matching listings for each product */
 	private Map<Product,List<Listing>> matchLists = new HashMap<Product,List<Listing>>();
-	
-	/** These are words that will be ignored in the determination of whether there is a match of manufacturers or not */
-	private static final Set<String> manufacturerNoiseWords = new HashSet<String>();
 	
 	private static final Set<Pattern> forSynonyms = new HashSet<Pattern>();
 	
@@ -45,7 +43,10 @@ public class ProductCollection {
 		return matchLists;
 	}
 	
-	
+	/**
+	 * Adds a product to the lists, creating a new list for the manufacturer if necessary
+	 * @param p product to add
+	 */
 	public void addProduct(Product p) {
 		
 		String manufacturer = p.getManufacturer().toLowerCase();
@@ -79,7 +80,12 @@ public class ProductCollection {
 		}
 	}
 	
-	private Set<Product> findManufacturer(Listing l) {
+	/**
+	 * Returns the set of products associated with the manufacturer of this listing
+	 * @param l the listing
+	 * @return
+	 */
+	private Set<Product> findManufacturer(IListing l) {
 		
 		String manufacturer = l.getManufacturer().toLowerCase();
 		
@@ -98,7 +104,7 @@ public class ProductCollection {
 			for (String s : manufacturerWords) {
 				products = productsByManufacturer.get(s.toLowerCase());
 				if (products != null) {
-					// Note this as a synonym of the manufacturer for future use
+					// Note this as a synonym of the manufacturer for future use, speeding up the matching of future listings with this manufacturer
 					manufacturerSynonyms.put(manufacturer, products);
 				}
 				break;
@@ -110,7 +116,7 @@ public class ProductCollection {
 				for (String s : manufacturerWords) {
 					products = manufacturerSynonyms.get(s.toLowerCase());
 					if (products != null) {
-						// Note this as a synonym of the manufacturer for future use
+						// Note this as a synonym of the manufacturer for future use, speeding up the matching of future listings with this manufacturer
 						manufacturerSynonyms.put(manufacturer, products);
 					}
 					break;
@@ -118,9 +124,6 @@ public class ProductCollection {
 			}
 
 		}
-		
-		
-
 		
 		return products;
 	}
@@ -131,7 +134,7 @@ public class ProductCollection {
 	 * @param product the product to match
 	 * @return if there is a match
 	 */
-	private boolean matches(Listing listing, Product product) {
+	private boolean matches(IListing listing, Product product) {
 		
 		String title =  withoutFor(listing.getTitle());
 		
@@ -152,7 +155,10 @@ public class ProductCollection {
 		return true;
 	}
 	
-	
+	/**
+	 * Adds the listing to the product that matches it (if any)
+	 * @param listing
+	 */
 	public void addToMatchingProduct(Listing listing) {
 		
 		Set<Product> productSet = findManufacturer(listing);

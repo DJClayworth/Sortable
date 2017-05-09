@@ -1,0 +1,44 @@
+SORTABLE CODING CHALLENGE
+=========================
+
+This repo contains a response to the Coding Challenge by David Clayworth.
+
+WHAT IS IN THIS REPO
+====================
+
+I decided to go old school and code the challenge in Java. Classes coded by me are in the package 'challenge'. The package 'org.json' contains the org.json library,
+ unaltered and distributed in accordance with its license. It is used only for reading and writing JSON objects.
+ 
+ INSTALLATION AND RUNNING
+ ========================
+ To execute, compile all java, create a jar file as required, and run. The main class is ListingMatcher. You should supply 3 arguments to the program:
+ 1 The products file name
+ 2 The listing file name
+ 3 (optional) the results output file name. If no results file name is supplied output is written to standard output.
+ 
+ ASSUMPTIONS
+ ===========
+ 1) Since the requirements make no statement about what is required for products that have no listings, I have chosen to print nothing for such products.
+ 2) KITS. I have assumed that any listing that includes the product is a match, even if it includes other things also. So I have considered that a D3000 in a kit with a 
+    18-55mm lens is a match for the D3000 product. Since many listings labelled as 'kit' include no more than the product and a memory card, this seems appropriate.
+    
+ ALGORITHM
+ =========
+ The listing is considered a match if
+ 1) The manufacturers match. Without a manufacturer match the product cannot be a match for the listing. The method ProductCollection.findManufacturer
+    allows for inexact matching of manufacturers. Products are grouped by manufacturer, meaning that we need sort products only with a manufacturer match. Inexact matches that are found are 
+    cached so that future occurrences are matched more quickly.
+ 2) The listing title must contain both the 'model' string and the 'family' string (if there is a family string) as separate words and in exact form (but case insensitive).
+    ProductCollection.matches(...) contains the code for this.
+ 3) Parts of the listing title after the word 'for' (or linguistic synonyms) are discarded in the above match, to prevent matches with accessories relevant to the product model.
+ 
+ FURTHER OPTIMIZATIONS
+ =====================
+ Matching misses might be prevented by allowing some flexibility in the model number, such as allowing "D3000" to match "D-3000" or "D 3000". In view of the requirement that avoiding false matches 
+ was more important than finding all possible matches, this was not done.
+ Some speedup could be obtained by breaking the listing title into words and looking for the model and family strings among them, but this raises complexity when the model or family contain whitespace.
+ I would want to see performance analyses and more detailed speed requirements before undertaking this work in a production environment.
+ 
+ 
+ 
+ 

@@ -1,19 +1,32 @@
 package challenge;
 
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.json.JSONObject;
 
-public class Product {
+/**
+ * Class that represents an entry in the products file
+ * 
+ * @author David
+ *
+ */
+public class Product implements IProduct {
 	
 	public class ProductException extends Exception {
 		
+		/**
+		 * Exception thrown while generating the product class
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public ProductException(String error) {
 			super(error);
 		}
 	}
 	
+	/**
+	 * JSON keys
+	 */
 	public final static String PRODUCT_NAME = "product_name";
 	
 	public final static String MANUFACTURER = "manufacturer";
@@ -22,20 +35,23 @@ public class Product {
 	
 	public final static String FAMILY = "family";
 	
-	private String name;
 	
-	private Set<String> nameWordSet;
+	private String name;
 	
 	private String manufacturer;
 	
 	private String model;
 	
+	/**
+	 * Regex pattern that will be used to match the model
+	 */
 	private Pattern modelPattern;
-	
-	private Set<String> modelWordSet;
 	
 	private String family;
 	
+	/**
+	 * Regex pattern that will be used to match the model
+	 */
 	private Pattern familyPattern;
 	
 	public Product(JSONObject obj) throws ProductException {
@@ -67,10 +83,18 @@ public class Product {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see challenge.IProduct#getName()
+	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 	
+	/* (non-Javadoc)
+	 * @see challenge.IProduct#getModel()
+	 */
+	@Override
 	public String getModel() {
 		return model;
 	}
@@ -78,11 +102,12 @@ public class Product {
 	public Pattern getModelPattern() {
 		return modelPattern;
 	}
+
 	
-	public boolean isWordInModelSet(String word) {
-		return false;
-	}
-	
+	/* (non-Javadoc)
+	 * @see challenge.IProduct#getFamily()
+	 */
+	@Override
 	public String getFamily() {
 		return family;
 	}
@@ -93,6 +118,10 @@ public class Product {
 	
 
 	
+	/* (non-Javadoc)
+	 * @see challenge.IProduct#getManufacturer()
+	 */
+	@Override
 	public String getManufacturer() {
 		return manufacturer;
 	}
