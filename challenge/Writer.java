@@ -25,7 +25,7 @@ public class Writer {
 	
 	private static String PRODUCTNAME_KEY = "product_name";
 	
-	private static String LISTINGS_KEY = "price";
+	private static String LISTINGS_KEY = "listings";
 	
 
 	public static void writeResults(PrintStream outfile, Map<Product, List<Listing>> matchingListings) {
